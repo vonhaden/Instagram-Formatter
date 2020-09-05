@@ -1,0 +1,1 @@
+This is a Photoshop script meant to reformat images for use on Instagram.
