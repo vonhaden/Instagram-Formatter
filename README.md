@@ -12,7 +12,7 @@ This script takes any image and reformats it as:
 
 
 ## Usage
-Download the `generate.jsx` file and place it in Photoshop's Scripts folder
+Download the `instagram-format.jsx` file and place it in Photoshop's Scripts folder
 PC:
 ```shell script
 C:\Program Files\Adobe\Adobe Photoshop [VERSION]\Presets\Scripts
