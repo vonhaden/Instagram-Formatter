@@ -18,8 +18,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // Background Color
-var bgColor = new SolidColor();
-bgColor.rgb.hexValue = 'ffffff';     // Change to hex value for any color to change BG Color.
+var bgColor = 'ffffff';     // Change to hex value for any color to change BG Color.
 
 // File Resolution
 var squareResolution = 1500;        // Change this number if you want to adjust the square resolution
@@ -103,7 +102,9 @@ function formatImageFull() {
     resizeSquare(height, width);
 
     // Fill layer with bgColor
-    app.activeDocument.selection.fill(bgColor);
+    var background = new SolidColor();
+    background.rgb.hexValue = bgColor;
+    app.activeDocument.selection.fill(background);
 
     // Resize the Image
     docRef.resizeImage(squareResolution, squareResolution);
