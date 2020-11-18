@@ -37,6 +37,7 @@ var baseTitle = baseName.substring(0, baseName.lastIndexOf('.'));
 
 
 
+
 ////////////////////////////////////////////////////////////////////////////////
 // Main Function
 ////////////////////////////////////////////////////////////////////////////////
@@ -145,7 +146,6 @@ function formatImageSquare(){
     unlockLayer();
     docRef.activeLayer.duplicate();
     docRef.activeLayer.isBackgroundLayer = true;
-    // docRef.activeLayer.allLocked = true;
     docRef.activeLayer = docRef.layers[0];
     docRef.layers[0].name = '--- ADJUST THIS LAYER ---';
 
@@ -157,9 +157,6 @@ function formatImageSquare(){
 
     // Save File
     saveImage(docRef);
-
-    // Close the File
-    // docRef.close(SaveOptions.DONOTSAVECHANGES);
 }
 
 
@@ -184,7 +181,6 @@ function formatImageStory(){
     unlockLayer();
     docRef.activeLayer.duplicate();
     docRef.activeLayer.isBackgroundLayer = true;
-    // docRef.activeLayer.allLocked = true;
     docRef.activeLayer = docRef.layers[0];
     docRef.layers[0].name = '--- ADJUST THIS LAYER ---';
 
@@ -212,9 +208,6 @@ function formatImageStory(){
 
     // Save File
     saveImage(docRef);
-
-    // Close the File
-    // docRef.close(SaveOptions.DONOTSAVECHANGES);
 }
 
 
