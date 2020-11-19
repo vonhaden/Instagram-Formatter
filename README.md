@@ -2,7 +2,7 @@
 # Instagram Format
 > This is a Photoshop script meant to reformat images for use on Instagram.
 
-![version](https://img.shields.io/badge/version-1.0-blue)
+![version](https://img.shields.io/badge/version-1.1-blue)
 ![GitHub all releases](https://img.shields.io/github/downloads/vonhaden/Instagram-Formatter/total)
 ![GitHub](https://img.shields.io/github/license/vonhaden/Instagram-Formatter)
 
