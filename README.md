@@ -37,7 +37,7 @@ If you would like to make adjustment to the behavior of the script, you can do s
 #### Background Color
 The background color by default is white, but by changing the hex value from `ffffff` to a different value, you can change the resulting background color.
 ```
-bgColor.rgb.hexValue = 'ffffff';
+bgColor = 'ffffff';
 ```
 
 #### Resolution
@@ -48,6 +48,7 @@ var squareResolution = 1500;
 
 ## Versions
 * Version 1.0: Initial Release
+* Version 1.1: Added error checking
 
 
 ## License
