@@ -18,8 +18,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // Background Color
-var bgColor = new SolidColor();
-bgColor.rgb.hexValue = 'ffffff';     // Change to hex value for any color to change BG Color.
+var bgColor = 'ffffff';     // Change to hex value for any color to change BG Color.
 
 // File Resolution
 var squareResolution = 1500;        // Change this number if you want to adjust the square resolution
@@ -30,11 +29,6 @@ var squareSuffix = 'Square';        // Suffix for image with square crop
 var storySuffix = 'Story';          // Suffix for image with 9x16 crop
 var separator = ' - '               // separator between file name and suffix
 
-// Base Document
-var baseDoc =  app.activeDocument;
-var baseName = baseDoc.name;
-var baseTitle = baseName.substring(0, baseName.lastIndexOf('.'));
-
 
 
 
@@ -43,6 +37,10 @@ var baseTitle = baseName.substring(0, baseName.lastIndexOf('.'));
 ////////////////////////////////////////////////////////////////////////////////
 
 function main(){
+    // Base Document
+    var baseDoc =  app.activeDocument;
+    var baseTitle = baseDoc.name.substring(0, baseDoc.name.lastIndexOf('.'));
+
     // Duplicate the documents
     // Create the Full Image
     baseDoc.duplicate(baseTitle + separator + fullSuffix);
@@ -55,19 +53,19 @@ function main(){
     app.activeDocument = app.documents.getByName(baseTitle + separator + fullSuffix);
 
     // Format full image
-    formatImageFull();
+    formatImageFull(baseDoc);
 
     // Switch active document
     app.activeDocument = app.documents.getByName(baseTitle + separator + squareSuffix);
 
     // Format square image
-    formatImageSquare();
+    formatImageSquare(baseDoc);
 
     // Switch active document
     app.activeDocument = app.documents.getByName(baseTitle + separator + storySuffix);
 
     // Format story image
-    formatImageStory();
+    formatImageStory(baseDoc);
 
     // Close the main image
     baseDoc.close(SaveOptions.DONOTSAVECHANGES);
@@ -81,7 +79,7 @@ function main(){
 ////////////////////////////////////////////////////////////////////////////////
 
 // Full Image Format
-function formatImageFull() {
+function formatImageFull(baseDoc) {
     var docRef =  app.activeDocument;
 
     // Set height and width
@@ -103,7 +101,9 @@ function formatImageFull() {
     resizeSquare(height, width);
 
     // Fill layer with bgColor
-    app.activeDocument.selection.fill(bgColor);
+    var background = new SolidColor();
+    background.rgb.hexValue = bgColor;
+    app.activeDocument.selection.fill(background);
 
     // Resize the Image
     docRef.resizeImage(squareResolution, squareResolution);
@@ -112,7 +112,7 @@ function formatImageFull() {
     docRef.flatten();
 
     // Save File
-    saveImage(docRef);
+    saveImage(docRef, baseDoc);
 
     // Close the File
     docRef.close(SaveOptions.DONOTSAVECHANGES);
@@ -120,18 +120,18 @@ function formatImageFull() {
 
 
 // Square Image Format
-function formatImageSquare(){
+function formatImageSquare(baseDoc){
     var docRef =  app.activeDocument;
 
     // Save and reopen file to allow for file folder location
     // Save File
-    saveImage(docRef);
+    saveImage(docRef, baseDoc);
 
     // Close the File
     docRef.close(SaveOptions.DONOTSAVECHANGES);
 
     // Open Image
-    openImage(squareSuffix);
+    openImage(squareSuffix, baseDoc);
 
     // Reset docRef
     var docRef =  app.activeDocument;
@@ -144,7 +144,6 @@ function formatImageSquare(){
     unlockLayer();
     docRef.activeLayer.duplicate();
     docRef.activeLayer.isBackgroundLayer = true;
-    // docRef.activeLayer.allLocked = true;
     docRef.activeLayer = docRef.layers[0];
     docRef.layers[0].name = '--- ADJUST THIS LAYER ---';
 
@@ -155,26 +154,23 @@ function formatImageSquare(){
     docRef.resizeImage(squareResolution, squareResolution);
 
     // Save File
-    saveImage(docRef);
-
-    // Close the File
-    // docRef.close(SaveOptions.DONOTSAVECHANGES);
+    saveImage(docRef, baseDoc);
 }
 
 
 // Story Image Format
-function formatImageStory(){
+function formatImageStory(baseDoc){
     var docRef =  app.activeDocument;
 
     // Save and reopen file to allow for file folder location
     // Save File
-    saveImage(docRef);
+    saveImage(docRef, baseDoc);
 
     // Close the File
     docRef.close(SaveOptions.DONOTSAVECHANGES);
 
     // Open Image
-    openImage(storySuffix);
+    openImage(storySuffix, baseDoc);
 
     // Reset docRef
     var docRef =  app.activeDocument;
@@ -183,7 +179,6 @@ function formatImageStory(){
     unlockLayer();
     docRef.activeLayer.duplicate();
     docRef.activeLayer.isBackgroundLayer = true;
-    // docRef.activeLayer.allLocked = true;
     docRef.activeLayer = docRef.layers[0];
     docRef.layers[0].name = '--- ADJUST THIS LAYER ---';
 
@@ -210,10 +205,7 @@ function formatImageStory(){
     docRef.resizeCanvas(resizeWidth, resizeHeight);
 
     // Save File
-    saveImage(docRef);
-
-    // Close the File
-    // docRef.close(SaveOptions.DONOTSAVECHANGES);
+    saveImage(docRef, baseDoc);
 }
 
 
@@ -276,7 +268,7 @@ function cropSquare(height, width){
 }
 
 // Save the image
-function saveImage(file){
+function saveImage(file, baseDoc){
     // Savefile name with Path
     var saveName = new File(decodeURI(baseDoc.path) + '/' + file.name);
 
@@ -288,12 +280,12 @@ function saveImage(file){
     jpgSaveOptions.quality = 12;
 
     file.saveAs(saveName, jpgSaveOptions, true, Extension.LOWERCASE)
-
 }
 
 // Open an Image based on suffix
-function openImage(suffix){
+function openImage(suffix, baseDoc){
     // Set filename
+    var baseTitle = baseDoc.name.substring(0, baseDoc.name.lastIndexOf('.'));
     var filename = baseTitle + ' - ' + suffix + '.jpg';
 
     // Savefile name with Path
@@ -303,6 +295,23 @@ function openImage(suffix){
     app.open(filePath);
 }
 
+// Check if file is open
+function isFileOpen() {
+    if (app.documents.length) {
+        return true;
+    }
+    else {
+        alert('There are no documents open.', 'No Documents Open', false);
+        return false;
+    }
+}
+
+// Show Error
+function showError(error) {
+    if (confirm('An unknown error has occurred.\n' + 'Would you like to see more information?', true, 'Unknown Error')) {
+        alert(error + '\n' + 'On line: ' + error.line, 'Script Error', true);
+    }
+}
 
 
 
@@ -311,4 +320,13 @@ function openImage(suffix){
 ////////////////////////////////////////////////////////////////////////////////
 
 // Run the main function
-main();
+if (isFileOpen()) {
+    try {
+        main();
+    }
+    catch (error){
+        if (error.number != 8007) { // don't report error on user cancel
+            showError(error);
+        }
+    }
+}
