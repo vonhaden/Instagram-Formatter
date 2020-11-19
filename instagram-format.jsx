@@ -29,12 +29,6 @@ var squareSuffix = 'Square';        // Suffix for image with square crop
 var storySuffix = 'Story';          // Suffix for image with 9x16 crop
 var separator = ' - '               // separator between file name and suffix
 
-// Base Document
-var baseDoc =  app.activeDocument;
-var baseName = baseDoc.name;
-var baseTitle = baseName.substring(0, baseName.lastIndexOf('.'));
-
-
 
 
 
@@ -43,6 +37,10 @@ var baseTitle = baseName.substring(0, baseName.lastIndexOf('.'));
 ////////////////////////////////////////////////////////////////////////////////
 
 function main(){
+    // Base Document
+    var baseDoc =  app.activeDocument;
+    var baseTitle = baseDoc.name.substring(0, baseDoc.name.lastIndexOf('.'));
+
     // Duplicate the documents
     // Create the Full Image
     baseDoc.duplicate(baseTitle + separator + fullSuffix);
@@ -55,19 +53,19 @@ function main(){
     app.activeDocument = app.documents.getByName(baseTitle + separator + fullSuffix);
 
     // Format full image
-    formatImageFull();
+    formatImageFull(baseDoc);
 
     // Switch active document
     app.activeDocument = app.documents.getByName(baseTitle + separator + squareSuffix);
 
     // Format square image
-    formatImageSquare();
+    formatImageSquare(baseDoc);
 
     // Switch active document
     app.activeDocument = app.documents.getByName(baseTitle + separator + storySuffix);
 
     // Format story image
-    formatImageStory();
+    formatImageStory(baseDoc);
 
     // Close the main image
     baseDoc.close(SaveOptions.DONOTSAVECHANGES);
@@ -81,7 +79,7 @@ function main(){
 ////////////////////////////////////////////////////////////////////////////////
 
 // Full Image Format
-function formatImageFull() {
+function formatImageFull(baseDoc) {
     var docRef =  app.activeDocument;
 
     // Set height and width
@@ -114,7 +112,7 @@ function formatImageFull() {
     docRef.flatten();
 
     // Save File
-    saveImage(docRef);
+    saveImage(docRef, baseDoc);
 
     // Close the File
     docRef.close(SaveOptions.DONOTSAVECHANGES);
@@ -122,18 +120,18 @@ function formatImageFull() {
 
 
 // Square Image Format
-function formatImageSquare(){
+function formatImageSquare(baseDoc){
     var docRef =  app.activeDocument;
 
     // Save and reopen file to allow for file folder location
     // Save File
-    saveImage(docRef);
+    saveImage(docRef, baseDoc);
 
     // Close the File
     docRef.close(SaveOptions.DONOTSAVECHANGES);
 
     // Open Image
-    openImage(squareSuffix);
+    openImage(squareSuffix, baseDoc);
 
     // Reset docRef
     var docRef =  app.activeDocument;
@@ -156,23 +154,23 @@ function formatImageSquare(){
     docRef.resizeImage(squareResolution, squareResolution);
 
     // Save File
-    saveImage(docRef);
+    saveImage(docRef, baseDoc);
 }
 
 
 // Story Image Format
-function formatImageStory(){
+function formatImageStory(baseDoc){
     var docRef =  app.activeDocument;
 
     // Save and reopen file to allow for file folder location
     // Save File
-    saveImage(docRef);
+    saveImage(docRef, baseDoc);
 
     // Close the File
     docRef.close(SaveOptions.DONOTSAVECHANGES);
 
     // Open Image
-    openImage(storySuffix);
+    openImage(storySuffix, baseDoc);
 
     // Reset docRef
     var docRef =  app.activeDocument;
@@ -207,7 +205,7 @@ function formatImageStory(){
     docRef.resizeCanvas(resizeWidth, resizeHeight);
 
     // Save File
-    saveImage(docRef);
+    saveImage(docRef, baseDoc);
 }
 
 
@@ -270,7 +268,7 @@ function cropSquare(height, width){
 }
 
 // Save the image
-function saveImage(file){
+function saveImage(file, baseDoc){
     // Savefile name with Path
     var saveName = new File(decodeURI(baseDoc.path) + '/' + file.name);
 
@@ -282,12 +280,12 @@ function saveImage(file){
     jpgSaveOptions.quality = 12;
 
     file.saveAs(saveName, jpgSaveOptions, true, Extension.LOWERCASE)
-
 }
 
 // Open an Image based on suffix
-function openImage(suffix){
+function openImage(suffix, baseDoc){
     // Set filename
+    var baseTitle = baseDoc.name.substring(0, baseDoc.name.lastIndexOf('.'));
     var filename = baseTitle + ' - ' + suffix + '.jpg';
 
     // Savefile name with Path
