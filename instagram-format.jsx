@@ -295,6 +295,23 @@ function openImage(suffix, baseDoc){
     app.open(filePath);
 }
 
+// Check if file is open
+function isFileOpen() {
+    if (app.documents.length) {
+        return true;
+    }
+    else {
+        alert('There are no documents open.', 'No Documents Open', false);
+        return false;
+    }
+}
+
+// Show Error
+function showError(error) {
+    if (confirm('An unknown error has occurred.\n' + 'Would you like to see more information?', true, 'Unknown Error')) {
+        alert(error + '\n' + 'On line: ' + error.line, 'Script Error', true);
+    }
+}
 
 
 
@@ -303,4 +320,13 @@ function openImage(suffix, baseDoc){
 ////////////////////////////////////////////////////////////////////////////////
 
 // Run the main function
-main();
+if (isFileOpen()) {
+    try {
+        main();
+    }
+    catch (error){
+        if (error.number != 8007) { // don't report error on user cancel
+            showError(error);
+        }
+    }
+}
